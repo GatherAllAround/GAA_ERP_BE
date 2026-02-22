@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import auth, reservations, teams, notices
+from app.routers import auth, users, sessions, reservations, teams, notices
 
 app = FastAPI(
     title="게더올어라운드 총괄 프로그램 API",
@@ -9,6 +9,8 @@ app = FastAPI(
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(sessions.router, prefix="/api/sessions", tags=["Sessions"])
 app.include_router(reservations.router, prefix="/api/reservations", tags=["Reservations"])
 app.include_router(teams.router, prefix="/api/teams", tags=["Teams"])
 app.include_router(notices.router, prefix="/api/notices", tags=["Notices"])
