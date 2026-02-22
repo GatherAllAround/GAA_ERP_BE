@@ -37,15 +37,67 @@
 
 | 역할 | 권한 |
 |------|------|
-| 일반 멤버 | 예약 신청, 일정 조회, 공지사항 확인 |
-| 운영진(대빵) | 운영진 권한 부여 및 관리, 멤버 관리 탭 접근 |
+| 일반 멤버 (member) | 예약 신청, 일정 조회, 공지사항 확인 |
+| 운영진 (admin) | 공지 작성, 세션/팀 관리, 멤버 관리 |
+| 대빵 (root) | 운영진 권한 부여, 전체 시스템 관리 |
 
 ## 기술 스택
 
-- **Backend:** Python / FastAPI
-- **Database:** PostgreSQL
-- **플랫폼:** Web
-- **비용:** 개발 및 인프라 비용 0원 지향
+| 구분 | 기술 |
+|------|------|
+| Backend | Python 3.11 / FastAPI 0.115 |
+| Database | PostgreSQL (Supabase) |
+| ORM | SQLAlchemy 2.0 (async) |
+| Migration | Alembic |
+| Auth | Kakao OAuth + JWT (python-jose) |
+| Hosting | Render (Free tier) |
+| 플랫폼 | Web |
+
+## 프로젝트 구조
+
+```
+app/
+├── main.py              # FastAPI 앱 진입점
+├── config.py            # 환경변수 설정 (pydantic-settings)
+├── database.py          # SQLAlchemy 비동기 엔진 및 세션
+├── models/              # SQLAlchemy ORM 모델
+├── routers/             # API 라우터 (auth, users, sessions, reservations, teams, notices)
+├── schemas/             # Pydantic 요청/응답 스키마
+└── services/            # 비즈니스 로직 (JWT, Kakao OAuth)
+alembic/                 # DB 마이그레이션
+docs/                    # ERD 등 문서
+```
+
+## 개발 환경 설정
+
+### 1. 의존성 설치
+```bash
+pip install -r requirements.txt
+```
+
+### 2. 환경변수 설정
+`.env.example`을 복사하여 `.env` 파일을 생성하고 값을 채웁니다.
+```bash
+cp .env.example .env
+```
+
+### 3. DB 마이그레이션
+```bash
+alembic upgrade head
+```
+
+### 4. 서버 실행
+```bash
+uvicorn app.main:app --reload
+```
+서버가 `http://localhost:8000`에서 실행됩니다.
+API 문서는 `http://localhost:8000/docs`에서 확인 가능합니다.
+
+## 배포
+
+- **API 서버:** https://gaa-erp-be.onrender.com
+- **DB:** Supabase PostgreSQL (ap-southeast-1, Singapore)
+- GitHub `main` 브랜치 push 시 Render에서 자동 배포
 
 ## 로드맵
 
