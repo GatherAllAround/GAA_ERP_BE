@@ -6,7 +6,7 @@ KAKAO_TOKEN_URL = "https://kauth.kakao.com/oauth/token"
 KAKAO_USER_INFO_URL = "https://kapi.kakao.com/v2/user/me"
 
 
-async def get_kakao_access_token(code: str) -> str:
+async def get_kakao_access_token(code: str, redirect_uri: str) -> str:
     """인가코드로 카카오 access_token을 받아온다."""
     async with httpx.AsyncClient() as client:
         response = await client.post(
@@ -14,7 +14,7 @@ async def get_kakao_access_token(code: str) -> str:
             data={
                 "grant_type": "authorization_code",
                 "client_id": settings.kakao_client_id,
-                "redirect_uri": settings.kakao_redirect_uri,
+                "redirect_uri": redirect_uri,
                 "code": code,
             },
         )

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.database import get_db
 from app.models.user import User
 from app.schemas.auth import KakaoLoginRequest, TokenResponse, UserResponse
@@ -19,7 +20,7 @@ async def kakao_callback(code: str, db: AsyncSession = Depends(get_db)):
     카카오에서 인가코드를 받아 자동으로 로그인 처리 후 JWT 반환
     """
     try:
-        kakao_token = await get_kakao_access_token(code)
+        kakao_token = await get_kakao_access_token(code, settings.kakao_redirect_uri)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="카카오 인가코드가 유효하지 않습니다")
 
@@ -55,7 +56,7 @@ async def kakao_login(request: KakaoLoginRequest, db: AsyncSession = Depends(get
     4. JWT 발급
     """
     try:
-        kakao_token = await get_kakao_access_token(request.code)
+        kakao_token = await get_kakao_access_token(request.code, request.redirect_uri)
     except Exception:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="카카오 인가코드가 유효하지 않습니다")
 

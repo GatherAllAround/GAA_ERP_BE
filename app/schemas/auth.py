@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 class KakaoLoginRequest(BaseModel):
     code: str  # 카카오 인가코드
+    redirect_uri: str  # 프론트엔드가 카카오에 보낸 redirect_uri
 
 
 class TokenResponse(BaseModel):
